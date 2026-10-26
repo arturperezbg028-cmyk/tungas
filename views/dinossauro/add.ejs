@@ -1,0 +1,51 @@
+<%- include('../cabecalho')%>
+
+<div>
+    <tr><a href="../dinossauro"> ← Voltar </a></tr> 
+    <h3>Novo Dinossauro</h3>
+
+    <form method="post" action="/dinossauro/add">
+        <p>Nome</p>
+        <input type="text" name="nome" placeholder="Nome do dinossauro..." required>
+
+        <p>Espécie</p>
+        <select name="especie" required>
+            <option value="">Selecione...</option>
+            <option value="Theropoda">Theropoda</option>
+            <option value="Sauropoda">Sauropoda</option>
+            <option value="Ceratopsia">Ceratopsia</option>
+            <option value="Ornithopoda">Ornithopoda</option>
+        </select>
+        <br>
+
+        <p>Descrição</p>
+        <textarea name="descricao" placeholder="Descrição detalhada do dinossauro..."></textarea>
+        <br>
+
+        <p>Altura (metros)</p>
+        <input type="number" name="altura" step="0.01" value="0">
+
+        <p>Peso (toneladas)</p>
+        <input type="number" name="peso" step="0.01" value="0">
+
+        <p>Ano de Descoberta</p>
+        <input type="number" name="anoDescoberta" value="2026">
+        <br>
+
+        <p>Dieta</p>
+        <select name="dieta">
+            <option value="">Selecione...</option>
+            <option value="Carnívoro">Carnívoro</option>
+            <option value="Herbívoro">Herbívoro</option>
+            <option value="Onívoro">Onívoro</option>
+        </select>
+        <br><br>
+
+        <button type="submit">Adicionar</button>
+        <button type="reset">Cancelar</button>
+
+    </form>
+
+</div>
+</body>
+</html>
