@@ -1,0 +1,24 @@
+<%- include('../cabecalho')%>
+    <div>
+        <tr><a href="/dinossauro"> ← Voltar </a></tr>
+        <form method="post">
+        <p>ID</p>
+        <input type="text" name="id" value="<%=dinossauro.id%>" readonly>
+        <br><br>
+        <p>Espécie</p>
+        <input type="text" name="nome" value="<%=dinossauro.especie%>">
+        <br><br>
+        <p>dieta</p>
+        <input type="text" name="periodo" value="<%=dinossauro.dieta%>">
+        <p>anoDescoberta</p>
+        <input type="text" name="periodo" value="<%=dinossauro.anoDescoberta%>">
+
+        <br><br>
+        <button type="submit">Adicionar</button>
+        <button type="reset">Cancelar</button>
+        </form>
+    </div>
+
+    </body>
+
+    </html>
