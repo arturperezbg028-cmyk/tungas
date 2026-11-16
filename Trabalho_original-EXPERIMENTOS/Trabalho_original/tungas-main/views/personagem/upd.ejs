@@ -1,24 +1,28 @@
-<%- include('../cabecalho')%>
-    <div>
-        <tr><a href="/personagem"> ← Voltar </a></tr>
-        <form method="post">
-        <p>ID</p>
-        <input type="text" name="id" value="<%=personagem.id%>" readonly>
-        <br><br>
-        <p>Life</p>
-        <input type="text" name="life" value="<%=personagem.life%>">
-        <br><br>
-        <p>pe</p>
-        <input type="text" name="pe" value="<%=personagem.pe%>">
-        <p>san</p>
-        <input type="text" name="san" value="<%=personagem.san%>">
+<%- include('../cabecalho') %>
 
-        <br><br>
-        <button type="submit">Adicionar</button>
-        <button type="reset">Cancelar</button>
-        </form>
-    </div>
+<div>
+    <h3>Editar Status do Personagem</h3>
+    
+    <!-- Mostra o nome da ficha apenas para referência -->
+    <p><strong>Personagem:</strong> <%= personagem.ficha ? personagem.ficha.nome : '' %></p>
 
-    </body>
+    <form action="/personagem/upd/<%= personagem._id %>" method="POST">
+        <!-- Mantém o ID da ficha vinculado de forma oculta -->
+        <input type="hidden" name="fichaId" value="<%= personagem.ficha ? personagem.ficha._id : '' %>">
 
-    </html>
+        <label>Vida (Life):</label><br>
+        <input type="text" name="life" value="<%= personagem.life %>" required><br><br>
+
+        <label>Pontos de Esforço (PE):</label><br>
+        <input type="text" name="pe" value="<%= personagem.pe %>" required><br><br>
+
+        <label>Sanidade (SAN):</label><br>
+        <input type="text" name="san" value="<%= personagem.san %>" required><br><br>
+
+        <button type="submit">Salvar Alterações</button>
+        <a href="/personagem">Cancelar</a>
+    </form>
+</div>
+
+</body>
+</html>

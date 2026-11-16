@@ -18,6 +18,22 @@ app.set('view engine', 'ejs');
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(join(__dirname, 'public')));
 
+// Dicionário atualizado com status iniciais e ganhos por nível
+const statusPorClasse = {
+  'Combatente': { 
+    inicial: { life: 20, pe: 2, san: 12 }, 
+    porNivel: { life: 4, pe: 2, san: 3 } 
+  },
+  'Especialista': { 
+    inicial: { life: 16, pe: 3, san: 16 }, 
+    porNivel: { life: 3, pe: 3, san: 4 } 
+  },
+  'Ocultista': { 
+    inicial: { life: 12, pe: 4, san: 20 }, 
+    porNivel: { life: 2, pe: 4, san: 5 } 
+  }
+};
+
 // ==========================================
 // ROTAS PRINCIPAL
 // ==========================================
@@ -41,8 +57,22 @@ app.get('/ficha/add', (req, res) => {
 
 app.post('/ficha/add', async (req, res) => {
   const { nome, classe, origem, lore } = req.body;
-  await Ficha.create({ nome, classe, origem, lore });
-  res.redirect('/ficha');
+  
+  // 1. Cria a Ficha e guarda ela na variável 'novaFicha'
+  const novaFicha = await Ficha.create({ nome, classe, origem, lore });
+
+  // 2. Busca os valores padrão da classe (se não achar, usa 10 como padrão)
+  const statusIniciais = statusPorClasse[classe] || { life: '10', pe: '10', san: '10' };
+
+  // 3. Cria o Personagem automaticamente vinculado a essa Ficha
+  await Personagem.create({
+    ficha: novaFicha._id,
+    life: statusIniciais.life,
+    pe: statusIniciais.pe,
+    san: statusIniciais.san
+  });
+
+  res.redirect('/personagem');
 });
 
 app.get('/ficha/upd/:id', async (req, res) => {
@@ -50,50 +80,9 @@ app.get('/ficha/upd/:id', async (req, res) => {
   res.render('ficha/upd', { ficha });
 });
 
-app.post('/ficha/upd/:id', async (req, res) => {
-  const { nome, classe, origem, lore } = req.body;
-  await Ficha.findByIdAndUpdate(req.params.id, { nome, classe, origem, lore });
-  res.redirect('/ficha');
-});
-
 app.get('/ficha/del/:id', async (req, res) => {
   await Ficha.findByIdAndDelete(req.params.id);
   res.redirect('/ficha');
-});
-
-// ==========================================
-// ROTAS DE PERSONAGEM
-// ==========================================
-
-app.get('/personagem', async (req, res) => {
-  const personagens = await Personagem.find();
-  res.render('personagem/lst', { personagens });
-});
-
-app.get('/personagem/add', (req, res) => {
-  res.render('personagem/add');
-});
-
-app.post('/personagem/add', async (req, res) => {
-  const { life, pe, san } = req.body;
-  await Personagem.create({ life, pe, san });
-  res.redirect('/personagem');
-});
-
-app.get('/personagem/upd/:id', async (req, res) => {
-  const personagem = await Personagem.findById(req.params.id);
-  res.render('personagem/upd', { personagem });
-});
-
-app.post('/personagem/upd/:id', async (req, res) => {
-  const { life, pe, san } = req.body;
-  await Personagem.findByIdAndUpdate(req.params.id, { life, pe, san });
-  res.redirect('/personagem');
-});
-
-app.get('/personagem/del/:id', async (req, res) => {
-  await Personagem.findByIdAndDelete(req.params.id);
-  res.redirect('/personagem');
 });
 
 // ==========================================
@@ -131,29 +120,55 @@ app.get('/campanha/del/:id', async (req, res) => {
   res.redirect('/campanha');
 });
 
-
 // ==========================================
 // ROTAS DE PERSONAGEM
 // ==========================================
 
 // 1. Listar Personagens trazendo os dados da Ficha (.populate)
 app.get('/personagem', async (req, res) => {
-  // O .populate('ficha') substitui o ID pelos dados reais da ficha (nome, classe, etc.)
   const personagens = await Personagem.find().populate('ficha');
   res.render('personagem/lst', { personagens });
 });
 
 // 2. Abrir formulário de adicionar Personagem enviando as Fichas disponíveis
 app.get('/personagem/add', async (req, res) => {
-  const fichas = await Ficha.find(); // Busca todas as fichas criadas
-  res.render('personagem/add', { fichas }); // Envia para o EJS
+  const fichas = await Ficha.find();
+  res.render('personagem/add', { fichas });
 });
 
-// 3. Salvar o Personagem vinculado à Ficha escolhida
+// 3. Salvar o Personagem com valores padrão da classe
 app.post('/personagem/add', async (req, res) => {
-  const { fichaId, life, pe, san } = req.body;
+  const { fichaId } = req.body;
+
+  // Busca a ficha selecionada para descobrir a classe dela
+  const fichaSelecionada = await Ficha.findById(fichaId);
+
+  // Pega os status da classe (ou usa '10' como padrão caso a classe tenha outro nome)
+  const statusIniciais = statusPorClasse[fichaSelecionada.classe] || { life: '10', pe: '10', san: '10' };
+
+  // Cria o personagem já com a vida, PE e sanidade preenchidos
   await Personagem.create({ 
-    ficha: fichaId, // Salva o ID da ficha selecionada
+    ficha: fichaId,
+    life: statusIniciais.life, 
+    pe: statusIniciais.pe, 
+    san: statusIniciais.san 
+  });
+  
+  res.redirect('/personagem');
+});
+
+// 4. Abrir formulário de edição trazendo o personagem e as fichas
+app.get('/personagem/upd/:id', async (req, res) => {
+  const personagem = await Personagem.findById(req.params.id).populate('ficha');
+  const fichas = await Ficha.find();
+  res.render('personagem/upd', { personagem, fichas });
+});
+
+// 5. Atualizar o Personagem
+app.post('/personagem/upd/:id', async (req, res) => {
+  const { fichaId, life, pe, san } = req.body;
+  await Personagem.findByIdAndUpdate(req.params.id, { 
+    ficha: fichaId, 
     life, 
     pe, 
     san 
@@ -161,9 +176,34 @@ app.post('/personagem/add', async (req, res) => {
   res.redirect('/personagem');
 });
 
+// 6. Deletar o Personagem
+app.get('/personagem/del/:id', async (req, res) => {
+  await Personagem.findByIdAndDelete(req.params.id);
+  res.redirect('/personagem');
+});
 
+// 7. Subir de Nível (Level Up)
+app.get('/personagem/levelup/:id', async (req, res) => {
+  // Busca o personagem trazendo os dados da ficha para saber a classe
+  const personagem = await Personagem.findById(req.params.id).populate('ficha');
+  
+  if (personagem && personagem.ficha) {
+    const classe = personagem.ficha.classe;
+    const configClasse = statusPorClasse[classe];
 
+    // Se a classe existir no dicionário, soma os pontos correspondentes
+    if (configClasse) {
+      personagem.nivel += 1;
+      personagem.life += configClasse.porNivel.life;
+      personagem.pe += configClasse.porNivel.pe;
+      personagem.san += configClasse.porNivel.san;
+      
+      await personagem.save();
+    }
+  }
 
+  res.redirect('/personagem');
+});
 
 // ==========================================
 // INICIALIZAÇÃO DO SERVIDOR
