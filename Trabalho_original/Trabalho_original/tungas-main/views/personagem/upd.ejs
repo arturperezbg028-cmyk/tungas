@@ -1,0 +1,24 @@
+<%- include('../cabecalho')%>
+    <div>
+        <tr><a href="/personagem"> ← Voltar </a></tr>
+        <form method="post">
+        <p>ID</p>
+        <input type="text" name="id" value="<%=personagem.id%>" readonly>
+        <br><br>
+        <p>Life</p>
+        <input type="text" name="life" value="<%=personagem.life%>">
+        <br><br>
+        <p>pe</p>
+        <input type="text" name="pe" value="<%=personagem.pe%>">
+        <p>san</p>
+        <input type="text" name="san" value="<%=personagem.san%>">
+
+        <br><br>
+        <button type="submit">Adicionar</button>
+        <button type="reset">Cancelar</button>
+        </form>
+    </div>
+
+    </body>
+
+    </html>

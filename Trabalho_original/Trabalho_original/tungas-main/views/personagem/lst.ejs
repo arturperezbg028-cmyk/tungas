@@ -1,0 +1,58 @@
+<%- include('../cabecalho')%>
+    <div>
+
+        <form action="/personagem" method="POST">
+            <input type="text" name="pesquisar" placeholder="Nome do  personagem">
+            <input type="submit" value="Buscar">
+            <a href="/personagem">Limpar</a>
+        </form>
+        <!-- Abaixo continua a sua tabela ou lista normal usando 'personagens' -->
+        <%personagens.forEach(personagem=>{%>
+            <div>
+                <h3>
+                    <%=personagem.life%>
+                </h3>
+                <p>
+                    <%=personagem.pe%>
+                </p>
+            </div>
+            <% }) %>
+                <h <h3>Personagem</h3>
+                    <a href="/personagem/add">Adicionar ficha</a><br><br>
+
+                    <table>
+                        <tr>
+                            <td>
+                                <h3>life</h3>
+                            </td>
+                            <td>
+                                <h3>Pe</h3>
+                            </td>
+                            <td>
+                                <h3>San</h3>
+                            </td>
+                            <td>
+                                <h3>Ação</h3>
+                        </tr>
+                        <%personagens.forEach(personagem=>{%>
+                            <tr>
+                                <td>
+                                    <%=personagem.life%>
+                                </td>
+                                <td>
+                                    <%=personagem.pe%>
+                                </td>
+                                <td>
+                                    <%=personagem.san%>
+                                </td>
+                                <td>
+                                    <a href="/personagem/upd/<%=personagem.id%>">✏️</a>
+                                    <a href="/personagem/del/<%=personagem.id%>">🗑️</a>
+
+                                </td>
+                            </tr>
+                            <%})%>
+                    </table>
+                    </body>
+
+                    </html>

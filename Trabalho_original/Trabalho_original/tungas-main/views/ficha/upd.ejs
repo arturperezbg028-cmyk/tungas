@@ -1,0 +1,36 @@
+<%- include('../cabecalho') %>
+
+    <div>
+        <a href="/ficha"> ← Voltar </a>
+        <h3>Editar Ficha</h3>
+
+        <form method="post" action="/ficha/upd/<%= ficha.id %>">
+            <p>ID</p>
+            <input type="text" name="id" value="<%= ficha.id %>" readonly>
+
+            <p>Nome</p>
+            <input type="text" name="nome" value="<%= ficha.nome %>" required>
+
+            <p>Classe</p>
+            <select name="classe" required>
+                <option value="Combatente" <%=ficha.classe==='Combatente' ? 'selected' : '' %>>Combatente</option>
+                <option value="Ocultista" <%=ficha.classe==='Ocultista' ? 'selected' : '' %>>Ocultista</option>
+                <option value="Especialista" <%=ficha.classe==='Especialista' ? 'selected' : '' %>>Especialista</option>
+            </select>
+
+            <p>Origem</p>
+            <input type="text" name="origem" value="<%= ficha.origem %>" required>
+
+            <p>Lore / Histórico</p>
+            <textarea name="lore"><%= ficha.lore %></textarea>
+
+            <div>
+                <button type="submit">SALVAR</button>
+                <button type="reset">Cancelar</button>
+            </div>
+        </form>
+    </div>
+
+    </body>
+
+    </html>
