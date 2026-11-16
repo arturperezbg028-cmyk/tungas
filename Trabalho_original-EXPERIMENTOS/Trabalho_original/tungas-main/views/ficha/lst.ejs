@@ -1,0 +1,46 @@
+HTML
+<%- include('../cabecalho') %>
+
+    <div>
+        <h3>Fichas</h3>
+        <p>Gerencie as fichas cadastradas no site</p>
+        <a href="/ficha/add">+ Nova ficha</a><br><br>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Classe</th>
+                    <th>Origem</th>
+                    <th>Lore</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% fichas.forEach(ficha=> { %>
+                    <tr>
+                        <td>
+                            <%= ficha.nome %>
+                        </td>
+                        <td>
+                            <%= ficha.classe %>
+                        </td>
+                        <td>
+                            <%= ficha.origem %>
+                        </td>
+                        <td>
+                            <%= ficha.lore %>
+                        </td>
+                        <td>
+                            <a href="/ficha/upd/<%= ficha.id %>">✏️ Editar</a>
+                            <a href="/ficha/del/<%= ficha.id %>">🗑️ Deletar</a>
+                        </td>
+                    </tr>
+                    <% }) %>
+            </tbody>
+        </table>
+    </div>
+
+    </body>
+
+    </html>

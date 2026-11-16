@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SISTEMA NEXUS</title>
+    <!-- Apenas estilos: Bootstrap CSS, sem componentes JavaScript. -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Special+Elite&display=swap');
+
+        :root {
+            --bs-primary: #a30808;
+            /* Vermelho Sangue / Sigilo */
+            --bs-primary-rgb: 163, 8, 8;
+            --bs-secondary: #c99a2e;
+            /* Dourado Oculto / Arquivo */
+            --bs-accent: #5e0000;
+            /* Vermelho Escuro / Calamidade */
+            --bs-link-color: #c99a2e;
+            --bs-link-hover-color: #ff3333;
+            --bs-body-color: #d1cbd1;
+            --bs-body-bg: #090a0f;
+            --bs-border-color: #2b2d38;
+        }
+
+        body {
+            max-width: 1120px;
+            min-height: 100vh;
+            margin: 0 auto;
+            padding: 40px 28px;
+            font-family: 'Special Elite', monospace;
+            /* Fonte estilo máquina de escrever */
+            font-size: 1rem;
+            line-height: 1.65;
+            background-color: var(--bs-body-bg);
+            background-image:
+                radial-gradient(circle at 50% 50%, rgba(163, 8, 8, 0.06) 0%, transparent 75%),
+                linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+            background-size: 100% 100%, 100% 4px;
+            color: var(--bs-body-color);
+        }
+
+        /* Cabeçalho Estilo Pasta de Caso / Dossie Sigiloso */
+        body>h3:first-of-type {
+            padding: 24px 28px;
+            margin-bottom: 24px;
+            background: #140505;
+            color: var(--bs-primary);
+            font-family: 'Cinzel', serif;
+            font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            border-radius: 0;
+            border-left: 6px solid var(--bs-primary);
+            border-right: 1px solid rgba(163, 8, 8, 0.3);
+            box-shadow: 0 0 25px rgba(163, 8, 8, 0.2), inset 0 0 20px rgba(0, 0, 0, 0.9);
+            text-shadow: 0 0 10px rgba(163, 8, 8, 0.6);
+        }
+
+        h3 {
+            margin: 24px 0 16px;
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: var(--bs-secondary);
+            text-shadow: 0 0 6px rgba(201, 154, 46, 0.3);
+            text-transform: uppercase;
+        }
+
+        p {
+            color: #a49eab;
+            margin-bottom: 12px;
+        }
+
+        a {
+            text-decoration: none;
+            color: var(--bs-link-color);
+            transition: all 0.2s ease;
+        }
+
+        a:hover {
+            color: var(--bs-link-hover-color);
+            text-shadow: 0 0 8px var(--bs-primary);
+        }
+
+        body>a {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 0 6px 20px 0;
+            border: 1px solid var(--bs-primary);
+            border-radius: 0;
+            background: rgba(163, 8, 8, 0.15);
+            color: #e5e5e5;
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            box-shadow: inset 0 0 10px rgba(163, 8, 8, 0.3);
+        }
+
+        body>a:hover {
+            background: var(--bs-primary);
+            color: #fff;
+            box-shadow: 0 0 15px var(--bs-primary);
+        }
+
+        /* Bloco de Relatório / Evidência */
+        body>div {
+            margin-top: 24px;
+            padding: 28px;
+            background: #0f1017;
+            border: 1px solid var(--bs-border-color);
+            border-left: 4px solid var(--bs-secondary);
+            border-radius: 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+        }
+
+        body>div>h3:first-child {
+            margin-top: 0;
+        }
+
+        /* Tabela de Dados da Investigação */
+        table {
+            width: 100%;
+            margin: 20px 0;
+            border-collapse: collapse;
+            background: #0b0c12;
+            border: 1px solid var(--bs-border-color);
+            border-radius: 0;
+        }
+
+        body>table:first-of-type:empty {
+            display: none;
+        }
+
+        td {
+            padding: 14px 18px;
+            border-bottom: 1px solid rgba(201, 154, 46, 0.15);
+            vertical-align: middle;
+        }
+
+        tr:first-child td {
+            background: #170707;
+            color: var(--bs-primary);
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            border-bottom: 2px solid var(--bs-primary);
+        }
+
+        tr:last-child td {
+            border-bottom: 0;
+        }
+
+        td h3,
+        td p {
+            margin: 0;
+            font-size: inherit;
+            color: inherit;
+            letter-spacing: normal;
+        }
+
+        td a {
+            display: inline-block;
+            padding: 4px 10px;
+            background: rgba(201, 154, 46, 0.1);
+            border: 1px solid var(--bs-secondary);
+            border-radius: 0;
+        }
+
+        form {
+            max-width: 760px;
+            margin-top: 24px;
+        }
+
+        form p {
+            margin: 18px 0 6px;
+            color: var(--bs-secondary);
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        /* Inputs Estilo Relatório Policial / Terminal Misterioso */
+        input,
+        select,
+        textarea {
+            display: block;
+            width: 100%;
+            min-height: 44px;
+            padding: 10px 14px;
+            color: #e5e5e5;
+            background: #050508;
+            border: 1px solid var(--bs-border-color);
+            border-radius: 0;
+            font: inherit;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.9);
+            transition: all 0.2s ease;
+        }
+
+        input::placeholder,
+        textarea::placeholder {
+            color: #525360;
+        }
+
+        textarea {
+            min-height: 128px;
+            resize: vertical;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: 0;
+            border-color: var(--bs-primary);
+            box-shadow: 0 0 12px rgba(163, 8, 8, 0.5), inset 0 0 6px rgba(163, 8, 8, 0.3);
+            background: #090a0e;
+        }
+
+        form br {
+            display: none;
+        }
+
+        button {
+            padding: 12px 24px;
+            margin: 24px 8px 0 0;
+            border: 1px solid var(--bs-primary);
+            border-radius: 0;
+            background: #1a0505;
+            color: #ffcccc;
+            font: inherit;
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 0 10px rgba(163, 8, 8, 0.2);
+        }
+
+        button:hover {
+            background: var(--bs-primary);
+            color: #fff;
+            box-shadow: 0 0 20px rgba(163, 8, 8, 0.6);
+        }
+
+        button[type="reset"] {
+            background: transparent;
+            color: #7a7b88;
+            border-color: #3b3c48;
+        }
+
+        button[type="reset"]:hover {
+            background: #1a1b24;
+            color: #fff;
+            box-shadow: none;
+        }
+
+        button:focus-visible,
+        a:focus-visible {
+            outline: 2px solid var(--bs-primary);
+            outline-offset: 3px;
+        }
+
+        footer {
+            margin-top: 48px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(163, 8, 8, 0.3);
+            color: #5a5b68;
+            font-size: .875rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        @media (max-width: 640px) {
+            body {
+                padding: 20px 14px;
+            }
+
+            body>h3:first-of-type {
+                padding: 18px 14px;
+            }
+
+            body>div {
+                padding: 20px 14px;
+            }
+
+            table {
+                display: block;
+                overflow-x: auto;
+            }
+
+            td {
+                padding: 12px;
+                min-width: 110px;
+            }
+
+            button {
+                padding: 10px 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <h3>Sistema ordem Nexus  <tr> <a href="/">
+        <br>
+        
+        <h2>Trocar Sistema</h2>
+    
+    </a></tr> </h3>
+    
+    
+    <table>
+        <tr><a href="/ficha">Fichas / </a></tr>
+        <tr><a href="/campanha">Campanhas / </a></tr>
+        <tr><a href="/personagem">Personagem/ </a></tr>
+    </table>

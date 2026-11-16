@@ -1,0 +1,34 @@
+    HTML
+    <%- include('../cabecalho') %>
+
+        <div>
+            <h3>Campanhas</h3>
+            <p>Gerencie as suas campanha no site</p>
+            <a href="/campanha/add">+ Nova campanha</a><br><br>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nome da campanha</th>
+                        <th>Descrição da campanha</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <%campanhas.forEach(campanha=>{%>
+                        <tr>
+                            <td>
+                                <%=campanha.Nome_da_campanha%>
+                            </td>
+                            <td>
+                                <%=campanha.Descrição_da_campanha%>
+                            </td>
+                            <td>
+                                <a href="/campanha/upd/<%=campanha.id%>">✏️</a>
+                                <a href="/campanha/del/<%=campanha.id%>">🗑️</a>
+                            </td>
+                        </tr>
+                        <% }) %>
+                </tbody>
+            </table>
+        </div>

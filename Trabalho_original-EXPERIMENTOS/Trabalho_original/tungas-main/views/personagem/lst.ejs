@@ -1,0 +1,27 @@
+<%- include('../cabecalho')%>
+    <div>
+        <h3>Personagem</h3>
+        <a href="/personagem/add">Adicionar ficha</a><br><br>
+
+        <table>
+            <tr>
+                <td><h3>life</h3></td>
+                <td><h3>Pe</h3></td>
+                <td><h3>San</h3></td>
+                <td><h3>Ação</h3>
+            </tr>
+            <%personagens.forEach(personagem=>{%>
+            <tr>
+                <td><%=personagem.life%></td>
+                <td><%=personagem.pe%></td>
+                <td><%=personagem.san%></td>
+                <td>
+                    <a href="/personagem/upd/<%=personagem.id%>">✏️</a>
+                    <a href="/personagem/del/<%=personagem.id%>">🗑️</a>
+
+                </td>
+            </tr>
+             <%})%>
+            </table>
+        </body>
+    </html>
