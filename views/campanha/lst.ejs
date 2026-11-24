@@ -1,0 +1,52 @@
+<%- include('../cabecalho') %>
+
+<div>
+    <!-- Formulário de busca -->
+    <form action="/campanha" method="POST">
+        <input type="text" name="pesquisar" placeholder="Nome da campanha">
+        <input type="submit" value="Buscar">
+        <a href="/campanha">Limpar</a>
+    </form>
+
+    <!-- Parte de gerenciamento e edição (em cima) -->
+    <h3>Campanhas</h3>
+    <p>Gerencie as suas campanhas no site</p>
+    <a href="/campanha/add">+ Nova campanha</a><br><br>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Nome da campanha</th>
+                <th>Descrição da campanha</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% campanhas.forEach(campanha => { %>
+                <tr>
+                    <td><%= campanha.Nome_da_campanha %></td>
+                    <td><%= campanha.Descricao_da_campanha %></td>
+                    <td>
+                        <a href="/campanha/upd/<%= campanha.id %>">✏️</a>
+                        <a href="/campanha/del/<%= campanha.id %>">🗑️</a>
+                    </td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+
+    <hr>
+
+    <!-- Exibição das campanhas com foto (embaixo) -->
+    <% campanhas.forEach(campanha => { %>
+        <div>
+            <h3><%= campanha.Nome_da_campanha %></h3>
+            <p><%= campanha.Descricao_da_campanha %></p>
+
+            <% if (campanha.foto) { %>
+                <img src="data:image/png;base64,<%= campanha.foto.toString('base64') %>"
+                     alt="Foto de <%= campanha.Nome_da_campanha %>" width="150">
+            <% } %>
+        </div>
+    <% }) %>
+</div>

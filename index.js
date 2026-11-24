@@ -2,12 +2,18 @@ import express from 'express';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 
-import Especie from './models/Especie.js';
-import Dinossauro from './models/Dinossauro.js';
-import Paleontologo from './models/Paleontologo.js';
+//upload do arquivo
+import multer from 'multer';
+
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
+
+import Ficha from './models/Ficha.js';
+import Personagem from './models/Personagem.js';
+import Campanha from './models/Campanha.js';
 
 const app = express();
-const PORT = 3000;
+const PORT = 4321;
 
 // Configuração do caminho do diretório
 const __filename = fileURLToPath(import.meta.url);
@@ -19,7 +25,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(join(__dirname, 'public')));
 
 // ==========================================
-// ROTAS PRINCIPAIS
+// ROTAS PRINCIPAL
 // ==========================================
 
 app.get('/', (req, res) => {
@@ -27,149 +33,172 @@ app.get('/', (req, res) => {
 });
 
 // ==========================================
-// ROTAS DE DINOSSAURO
+// ROTAS DE FICHA
 // ==========================================
 
-// Listar todos
-app.get('/dinossauro', async (req, res) => {
-  const dinossauros = await Dinossauro.find();
-  res.render('dinossauro/lst', { dinossauros });
+// Rota GET padrão (mostra todas as fichas)
+app.get('/ficha', async (req, res) => {
+  const fichas = await Ficha.find();
+  res.render('ficha/lst', { fichas });
 });
 
-// Formulário de adição
-app.get('/dinossauro/add', (req, res) => {
-  res.render('dinossauro/add');
-});
+// Rota POST de pesquisa (filtra as fichas pelo texto digitado)
+app.post('/ficha', async (req, res) => {
+  const termo = req.body.pesquisar; // Pega o valor do input name="pesquisar"
 
-// Processar adição
-app.post('/dinossauro/add', async (req, res) => {
-  const { nome, especie, peso, altura, anoDescoberta, dieta, descricao } = req.body;
-  await Dinossauro.create({
-    nome,
-    especie,
-    peso,
-    altura,
-    anoDescoberta,
-    dieta,
-    descricao
+  // Busca no banco onde o campo 'nome' contenha o termo digitado
+  const fichas = await Ficha.find({
+    nome: { $regex: termo, $options: 'i' }
   });
-  res.render('dinossauro/add');
+
+  // Renderiza a mesma página de listagem, mas agora só com as fichas filtradas
+  res.render('ficha/lst', { fichas });
 });
 
-// Formulário de edição
-app.get('/dinossauro/upd/:id', async (req, res) => {
-  const dinossauro = await Dinossauro.findById(req.params.id);
-  res.render('dinossauro/upd', { dinossauro });
+app.get('/ficha/add', (req, res) => {
+  res.render('ficha/add');
 });
 
-// Processar edição
-app.post('/dinossauro/upd/:id', async (req, res) => {
-  const { id, nome, especie, peso, altura, anoDescoberta, dieta, descricao } = req.body;
-  await Dinossauro.findByIdAndUpdate(id, {
-    nome,
-    especie,
-    peso,
-    altura,
-    anoDescoberta,
-    dieta,
-    descricao
+app.post('/ficha/add', async (req, res) => {
+  const { nome, classe, origem, lore } = req.body;
+  await Ficha.create({ nome, classe, origem, lore });
+  res.redirect('/ficha');
+});
+
+app.get('/ficha/upd/:id', async (req, res) => {
+  const ficha = await Ficha.findById(req.params.id);
+  res.render('ficha/upd', { ficha });
+});
+
+app.post('/ficha/upd/:id', async (req, res) => {
+  const { nome, classe, origem, lore } = req.body;
+  await Ficha.findByIdAndUpdate(req.params.id, { nome, classe, origem, lore });
+  res.redirect('/ficha');
+});
+
+app.get('/ficha/del/:id', async (req, res) => {
+  await Ficha.findByIdAndDelete(req.params.id);
+  res.redirect('/ficha');
+});
+
+// ==========================================
+// ROTAS DE PERSONAGEM
+// ==========================================
+
+app.get('/personagem', async (req, res) => {
+  const personagens = await Personagem.find();
+  res.render('personagem/lst', { personagens });
+});
+
+// Rota GET padrão (mostra todas as campanhas)
+app.get('/personagem', async (req, res) => {
+  const personagens = await Personagem.find();
+  res.render('personagem/lst', { personagens });
+});
+
+// Rota POST de pesquisa (filtra as campanhas pelo nome digitado)
+app.post('/personagem', async (req, res) => {
+  const termo = req.body.pesquisar;
+
+  const personagens = await Personagem.find({
+    life: { $regex: termo, $options: 'i' }
   });
-  const dinossauros = await Dinossauro.find();
-  res.render('dinossauro/lst', { dinossauros });
+
+  res.render('personagem/lst', { personagens });
 });
 
-// Deletar dinossauro
-app.get('/dinossauro/del/:id', async (req, res) => {
-  await Dinossauro.findByIdAndDelete(req.params.id);
-  const dinossauros = await Dinossauro.find();
-  res.render('dinossauro/lst', { dinossauros });
+app.get('/personagem/add', (req, res) => {
+  res.render('personagem/add');
 });
 
-// ==========================================
-// ROTAS DE ESPÉCIE
-// ==========================================
-
-// Listar todas
-app.get('/especie', async (req, res) => {
-  const especies = await Especie.find();
-  res.render('especie/lst', { especies });
+app.post('/personagem/add', async (req, res) => {
+  const { life, pe, san } = req.body;
+  await Personagem.create({ life, pe, san });
+  res.redirect('/personagem');
 });
 
-// Formulário de adição
-app.get('/especie/add', (req, res) => {
-  res.render('especie/add');
+app.get('/personagem/upd/:id', async (req, res) => {
+  const personagem = await Personagem.findById(req.params.id);
+  res.render('personagem/upd', { personagem });
 });
 
-// Processar adição
-app.post('/especie/add', async (req, res) => {
-  const { nome, periodo } = req.body;
-  await Especie.create({ nome, periodo });
-  res.render('especie/add');
+app.post('/personagem/upd/:id', async (req, res) => {
+  const { life, pe, san } = req.body;
+  await Personagem.findByIdAndUpdate(req.params.id, { life, pe, san });
+  res.redirect('/personagem');
 });
 
-// Formulário de edição
-app.get('/especie/upd/:id', async (req, res) => {
-  const especie = await Especie.findById(req.params.id);
-  res.render('especie/upd', { especie });
-});
-
-// Processar edição
-app.post('/especie/upd/:id', async (req, res) => {
-  const { id, nome, periodo } = req.body;
-  await Especie.findByIdAndUpdate(id, { nome, periodo });
-  const especies = await Especie.find();
-  res.render('especie/lst', { especies });
-});
-
-// Deletar espécie
-app.get('/especie/del/:id', async (req, res) => {
-  await Especie.findByIdAndDelete(req.params.id);
-  const especies = await Especie.find();
-  res.render('especie/lst', { especies });
+app.get('/personagem/del/:id', async (req, res) => {
+  await Personagem.findByIdAndDelete(req.params.id);
+  res.redirect('/personagem');
 });
 
 // ==========================================
-// ROTAS DE PALEONTÓLOGO
+// ROTAS DE CAMPANHA
 // ==========================================
 
-// Listar todos
-app.get('/paleontologo', async (req, res) => {
-  const paleontologos = await Paleontologo.find();
-  res.render('paleontologo/lst', { paleontologos });
+app.get('/campanha', async (req, res) => {
+  const campanhas = await Campanha.find();
+  res.render('campanha/lst', { campanhas });
 });
 
-// Formulário de adição
-app.get('/paleontologo/add', (req, res) => {
-  res.render('paleontologo/add');
+// Rota GET padrão (mostra todas as campanhas)
+app.get('/campanha', async (req, res) => {
+  const campanhas = await Campanha.find();
+  res.render('campanha/lst', { campanhas });
 });
 
-// Processar adição
-app.post('/paleontologo/add', async (req, res) => {
-  const { nome, nascimento, descoberta } = req.body;
-  await Paleontologo.create({ nome, nascimento, descoberta });
-  res.render('paleontologo/add');
+// Rota POST de pesquisa (filtra as campanhas pelo nome digitado)
+app.post('/campanha', async (req, res) => {
+  const termo = req.body.pesquisar;
+
+  const campanhas = await Campanha.find({
+    Nome_da_campanha: { $regex: termo, $options: 'i' }
+  });
+
+  res.render('campanha/lst', { campanhas });
 });
 
-// Formulário de edição
-app.get('/paleontologo/upd/:id', async (req, res) => {
-  const paleontologo = await Paleontologo.findById(req.params.id);
-  res.render('paleontologo/upd', { paleontologo });
+app.get('/campanha/add', (req, res) => {
+  res.render('campanha/add');
 });
 
-// Processar edição
-app.post('/paleontologo/upd/:id', async (req, res) => {
-  const { id, nome, nascimento, descoberta } = req.body;
-  await Paleontologo.findByIdAndUpdate(id, { nome, nascimento, descoberta });
-  const paleontologos = await Paleontologo.find();
-  res.render('paleontologo/lst', { paleontologos });
+app.post('/campanha/add', upload.single('foto'), async (req, res) => {
+  console.log(req.body)
+  const { Nome_da_campanha, Descricao_da_campanha } = req.body;
+  
+  let foto = null
+  if(req.file) foto = req.file.buffer
+
+  await Campanha.create({ Nome_da_campanha, Descricao_da_campanha, foto });
+  res.redirect('/campanha');
 });
 
-// Deletar paleontólogo
-app.get('/paleontologo/del/:id', async (req, res) => {
-  await Paleontologo.findByIdAndDelete(req.params.id);
-  const paleontologos = await Paleontologo.find();
-  res.render('paleontologo/lst', { paleontologos });
+app.get('/campanha/upd/:id', async (req, res) => {
+  const campanha = await Campanha.findById(req.params.id);
+  res.render('campanha/upd', { campanha });
 });
+
+app.post('/campanha/upd/:id', async (req, res) => {
+  const { Nome_da_campanha, Descricao_da_campanha } = req.body;
+  await Campanha.findByIdAndUpdate(req.params.id, { Nome_da_campanha, Descricao_da_campanha });
+  res.redirect('/campanha');
+});
+
+app.get('/campanha/del/:id', async (req, res) => {
+  await Campanha.findByIdAndDelete(req.params.id);
+  res.redirect('/campanha');
+});
+
+
+//rota para pesquisar instrumento por nome
+app.post('/instrumento/lst', async (req, res) => {
+  const { pesquisar } = req.body;
+  const instrumentos = await Instrumento.find({
+    nome: new RegExp(pesquisar, 'i')
+  });
+  res.render("instrumento/lst", { instrumentos });
+})
 
 // ==========================================
 // INICIALIZAÇÃO DO SERVIDOR

@@ -2,6 +2,12 @@ HTML
 <%- include('../cabecalho') %>
 
     <div>
+        <form action="/ficha" method="POST">
+            <input type="text" name="pesquisar" placeholder="Nome da ficha ou personagem">
+            <input type="submit" value="Buscar">
+            <a href="/ficha">Limpar</a>
+        </form>
+
         <h3>Fichas</h3>
         <p>Gerencie as fichas cadastradas no site</p>
         <a href="/ficha/add">+ Nova ficha</a><br><br>
@@ -39,6 +45,18 @@ HTML
                     <% }) %>
             </tbody>
         </table>
+
+        <hr>
+        <% fichas.forEach(ficha=> { %>
+            <div>
+                <h3>
+                    <%= ficha.nome %>
+                </h3>
+                <p>
+                    <%= ficha.classe %>
+                </p>
+            </div>
+            <% }) %>
     </div>
 
     </body>

@@ -3,12 +3,15 @@
         <tr><a href="../campanha"> ← Voltar </a></tr>
         <h3>Nova campanha</h3>
 
-        <form method="post" action="/campanha/add">
+        <form method="post" enctype="multipart/form-data" action="/campanha/add">
             <p>Nome da Campanha</p>
             <input type="text" name="Nome_da_campanha" required>
 
             <p>Descrição da Campanha</p>
-            <textarea name="Descrição_da_campanha" required></textarea>
+            <textarea name="Descricao_da_campanha" required></textarea>
+
+            <p>Foto</p>
+            <input type="file" name="foto" accept="image/png">
 
             <button type="submit">Adicionar</button>
         </form>
